@@ -1,20 +1,18 @@
-import twitter
+#!/usr/bin/env python
 
-keys = []
-f = open("twitter.conf", "r")
-for line in f:
-	keys.append( line.rstrip('\n'))
-f.close()
+import twitter
+from secrets import *
 
 auth = twitter.OAuth(
-	consumer_key=keys[0],
-	consumer_secret=keys[1],
-	token=keys[2],
-	token_secret=keys[3]
+	consumer_key=APIKEY,
+	consumer_secret=APISECRET,
+	token=ACCESSTOKEN,
+	token_secret=ACCESSSECRET
 )
 
 stream = twitter.stream.TwitterStream(auth=auth, domain='userstream.twitter.com')
 
 for msg in stream.user():
 	if 'direct_message' in msg:
-		print msg['direct_message']['text']
+		with open('twitterstream_dm_in.txt', 'a') as tf:
+			tf.write(msg['direct_message']['text'] + '\n')
